@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Access a wide range of tools to optimize images, convert PDFs, and more!">
+  <meta name="keywords" content="image compression, pdf tools, online tools, free tools">
+  <meta name="author" content="Your Name">
+  <title>Tools Hub - Image, PDF & More</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    header {
+      background-color: #2980b9;
+      padding: 80px 20px;
+      color: white;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 3.5em;
+      margin-bottom: 15px;
+    }
+
+    header p {
+      font-size: 1.2em;
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: #2c3e50;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .navbar a {
+      color: white;
+      padding: 12px 20px;
+      text-decoration: none;
+      font-size: 1.1em;
+      margin: 0 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .navbar a:hover {
+      background-color: #16a085;
+    }
+
+    /* Hero Section */
+    .hero {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 20px;
+      background-color: #ecf0f1;
+      border-bottom: 2px solid #ddd;
+      text-align: center;
+    }
+
+    .hero-text {
+      max-width: 600px;
+      color: #2c3e50;
+    }
+
+    .hero-text h2 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+
+    .hero-text p {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background-color: #2ecc71;
+      color: white;
+      padding: 15px 30px;
+      font-size: 1.1em;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .cta-btn:hover {
+      background-color: #27ae60;
+    }
+
+    .hero-img {
+      max-width: 50%;
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Section Styles */
+    .section {
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .section h2 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    .section p {
+      font-size: 1.2em;
+      margin-bottom: 40px;
+      color: #555;
+    }
+
+    /* Tools Section */
+    .tools-section {
+      background-color: #f5f7fa;
+    }
+
+    .tool-category {
+      margin-bottom: 40px;
+    }
+
+    .tool-category h3 {
+      font-size: 2.2em;
+      margin-bottom: 20px;
+      color: #2c3e50;
+      font-weight: 600;
+    }
+
+    .tool-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 30px;
+      justify-items: center;
+    }
+
+    .tool-card {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-align: center;
+      max-width: 300px;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .tool-card img {
+      max-width: 60px;
+      margin-bottom: 20px;
+    }
+
+    .tool-card h3 {
+      font-size: 1.6em;
+      color: #2c3e50;
+      margin-bottom: 15px;
+    }
+
+    .tool-card p {
+      font-size: 1.1em;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    .tool-card a {
+      background-color: #2ecc71;
+      color: white;
+      padding: 12px 25px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .tool-card a:hover {
+      background-color: #27ae60;
+    }
+
+    /* Footer */
+    .footer {
+      background-color: #34495e;
+      padding: 40px 20px;
+      text-align: center;
+      color: white;
+    }
+
+    .footer-links a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+    }
+
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .hero {
+        flex-direction: column;
+      }
+
+      .hero-img {
+        max-width: 70%;
+        margin-top: 30px;
+      }
+
+      .tools-section h2 {
+        font-size: 2.2em;
+      }
+
+      .tool-card {
+        padding: 20px;
+      }
+
+      .cta-btn {
+        padding: 12px 25px;
+      }
+
+      .navbar a {
+        padding: 10px 15px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 2.5em;
+      }
+
+      .hero-text h2 {
+        font-size: 2em;
+      }
+
+      .hero-text p {
+        font-size: 1.1em;
+      }
+
+      .tools-section h2 {
+        font-size: 2em;
+      }
+
+      .tool-card {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Tools Hub</h1>
+    <p>Your one-stop platform for optimizing images, converting PDFs, and more.</p>
+  </header>
+
+  <div class="navbar">
+    <a href="#home">Home</a>
+    <a href="#about">About</a>
+    <a href="#tools">Tools</a>
+    <a href="#contact">Contact</a>
+  </div>
+
+  <section class="hero">
+    <div class="hero-text">
+      <h2>Welcome to Tools Hub</h2>
+      <p>Explore a wide range of online tools for image optimization, PDF conversion, and more, to help you boost productivity!</p>
+      <a href="#tools" class="cta-btn">Explore Tools</a>
+    </div>
+    <img src="https://via.placeholder.com/600x400" alt="Tools Hero Image" class="hero-img">
+  </section>
+
+  <section class="section" id="about">
+    <h2>About Us</h2>
+    <p>Tools Hub provides a collection of tools that allow you to easily manage and optimize images, convert PDFs, and more—all in one place. Our goal is to simplify your digital life.</p>
+  </section>
+
+  <section class="tools-section" id="tools">
+    <h2>Our Popular Tools</h2>
+
+    <div class="tool-category">
+      <h3>Image Tools</h3>
+      <div class="tool-cards">
+        <div class="tool-card">
+          <img src="https://via.placeholder.com/60" alt="Image Compressor">
+          <h3>Image Compressor</h3>
+          <p>Reduce image size without losing quality.</p>
+          <a href="#">Try it Now</a>
+        </div>
+        <div class="tool-card">
+          <img src="https://via.placeholder.com/60" alt="Image Resizer">
+          <h3>Image Resizer</h3>
+          <p>Resize your images in seconds.</p>
+          <a href="#">Try it Now</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-category">
+      <h3>PDF Tools</h3>
+      <div class="tool-cards">
+        <div class="tool-card">
+          <img src="https://via.placeholder.com/60" alt="PDF Converter">
+          <h3>PDF Converter</h3>
+          <p>Convert PDFs to other formats and vice versa.</p>
+          <a href="#">Try it Now</a>
+        </div>
+        <div class="tool-card">
+          <img src="https://via.placeholder.com/60" alt="PDF Merger">
+          <h3>PDF Merger</h3>
+          <p>Merge multiple PDFs into one.</p>
+          <a href="#">Try it Now</a>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="section" id="contact">
+    <h2>Contact Us</h2>
+    <p>If you have any questions or feedback, feel free to contact us. We are always here to help!</p>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Contact Us</a>
+    </div>
+    <p>&copy; 2025 Tools Hub | All Rights Reserved</p>
+  </footer>
+
+</body>
+
+</html>
