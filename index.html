@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToolKit Pro - Image & PDF Tools</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #f8f9ff;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* PDF-Style Navigation Bar */
+        .pdf-navbar {
+            background: #2d3748;
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .pdf-navbar .logo {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pdf-navbar .logo i {
+            font-size: 1.5rem;
+            color: #4f46e5;
+        }
+
+        .pdf-navbar .nav-icons {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .pdf-navbar .nav-icons a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: background 0.3s ease;
+        }
+
+        .pdf-navbar .nav-icons a:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .pdf-navbar .dropdown {
+            position: relative;
+        }
+
+        .pdf-navbar .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+            z-index: 1;
+        }
+
+        .pdf-navbar .dropdown-content a {
+            color: #1e293b;
+            padding: 0.8rem 1rem;
+            text-decoration: none;
+            display: block;
+            transition: background 0.3s ease;
+        }
+
+        .pdf-navbar .dropdown-content a:hover {
+            background: #f1f5f9;
+        }
+
+        .pdf-navbar .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 6rem 0;
+            text-align: center;
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #4f46e5;
+        }
+
+        .btn-primary:hover {
+            background: #e0e7ff;
+            transform: translateY(-2px);
+        }
+
+        /* Tool Categories */
+        .tools-section {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.2rem;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .section-title p {
+            color: #64748b;
+            font-size: 1rem;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .tool-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .tool-icon {
+            width: 60px;
+            height: 60px;
+            background: #e0e7ff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 1.5rem;
+            color: #4f46e5;
+            transition: transform 0.3s ease;
+        }
+
+        .tool-card:hover .tool-icon {
+            transform: scale(1.1);
+        }
+
+        .tool-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+
+        .tool-card p {
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-secondary {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4338ca;
+        }
+
+        /* Footer */
+        footer {
+            background: #1e293b;
+            color: white;
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .footer-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pdf-navbar .nav-icons {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- PDF-Style Navigation Bar -->
+    <nav class="pdf-navbar">
+        <div class="container">
+            <a href="#" class="logo">
+                <i class="fas fa-file-pdf"></i>
+                ToolKit Pro
+            </a>
+            <div class="nav-icons">
+                <a href="#tools" title="Tools"><i class="fas fa-tools"></i></a>
+                <a href="#features" title="Features"><i class="fas fa-star"></i></a>
+                <a href="#contact" title="Contact"><i class="fas fa-envelope"></i></a>
+                <div class="dropdown">
+                    <a href="#" title="More"><i class="fas fa-ellipsis-h"></i></a>
+                    <div class="dropdown-content">
+                        <a href="#"><i class="fas fa-image"></i> Image Tools</a>
+                        <a href="#"><i class="fas fa-file-pdf"></i> PDF Tools</a>
+                        <a href="#"><i class="fas fa-cogs"></i> Settings</a>
+                        <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Your Ultimate Online Tool Suite</h1>
+            <p>Convert, compress, and transform files with our powerful online tools</p>
+            <a href="#tools" class="btn btn-primary">Explore Tools</a>
+        </div>
+    </section>
+
+    <!-- Main Tools Section -->
+    <section class="tools-section container" id="tools">
+        <div class="section-title">
+            <h2>Popular Tools</h2>
+            <p>Quick access to our most used tools</p>
+        </div>
+
+        <div class="tool-grid">
+            <!-- Image Tools -->
+            <div class="tool-card">
+                <div class="tool-icon"><i class="fas fa-file-image"></i></div>
+                <h3>Image Compressor</h3>
+                <p>Reduce image file size without losing quality</p>
+                <a href="#" class="btn btn-secondary">Use Tool</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon"><i class="fas fa-file-pdf"></i></div>
+                <h3>PDF Compressor</h3>
+                <p>Compress PDF documents while maintaining quality</p>
+                <a href="#" class="btn btn-secondary">Use Tool</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon"><i class="fas fa-sync"></i></div>
+                <h3>Image Converter</h3>
+                <p>Convert between JPG, PNG, WEBP formats</p>
+                <a href="#" class="btn btn-secondary">Use Tool</a>
+            </div>
+
+            <!-- PDF Tools -->
+            <div class="tool-card">
+                <div class="tool-icon"><i class="fas fa-file-export"></i></div>
+                <h3>PDF to Word</h3>
+                <p>Convert PDF documents to editable Word files</p>
+                <a href="#" class="btn btn-secondary">Use Tool</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon"><i class="fas fa-merge"></i></div>
+                <h3>PDF Merger</h3>
+                <p>Combine multiple PDF files into one</p>
+                <a href="#" class="btn btn-secondary">Use Tool</a>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon"><i class="fas fa-crop"></i></div>
+                <h3>Image Resizer</h3>
+                <p>Resize images to exact dimensions</p>
+                <a href="#" class="btn btn-secondary">Use Tool</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-section">
+                <h4>ToolKit Pro</h4>
+                <p>Your ultimate solution for file conversions and optimizations</p>
+            </div>
+            <div class="footer-section">
+                <h4>Tools</h4>
+                <div class="footer-links">
+                    <a href="#">Image Tools</a>
+                    <a href="#">PDF Tools</a>
+                    <a href="#">Converters</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <div class="footer-links">
+                    <a href="#">Contact</a>
+                    <a href="#">FAQ</a>
+                    <a href="#">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
