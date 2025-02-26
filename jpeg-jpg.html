@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToolKit Pro - Image & PDF Tools</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Previous styles remain the same */
+
+        /* New Converter Section Styles */
+        .converter-section {
+            padding: 4rem 0;
+            background: #f8f9ff;
+        }
+
+        .converter-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .converter-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .converter-header h2 {
+            font-size: 2rem;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .converter-header p {
+            color: #64748b;
+            font-size: 1rem;
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            background: #f8f9ff;
+        }
+
+        .upload-area.dragover {
+            border-color: #4f46e5;
+            background: #e0e7ff;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .upload-label {
+            cursor: pointer;
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: #4f46e5;
+            color: white;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .upload-label:hover {
+            background: #4338ca;
+            transform: translateY(-2px);
+        }
+
+        .upload-area p {
+            color: #64748b;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .preview-container {
+            margin: 2rem 0;
+            text-align: center;
+            display: none; /* Hidden by default */
+        }
+
+        #preview-image {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .conversion-options {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .download-btn {
+            background: #10b981;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: none; /* Hidden by default */
+        }
+
+        .download-btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .download-btn i {
+            margin-right: 0.5rem;
+        }
+
+        .file-info {
+            margin-top: 1.5rem;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .converter-container {
+                padding: 1.5rem;
+            }
+
+            .upload-label {
+                padding: 0.8rem 1.5rem;
+            }
+
+            .download-btn {
+                padding: 0.8rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- PDF-Style Navigation Bar -->
+    <nav class="pdf-navbar">
+        <div class="container">
+            <a href="#" class="logo">
+                <i class="fas fa-file-pdf"></i>
+                ToolKit Pro
+            </a>
+            <div class="nav-icons">
+                <a href="#converter" title="JPEG Converter"><i class="fas fa-file-image"></i></a>
+                <!-- Previous nav items remain -->
+            </div>
+        </div>
+    </nav>
+
+    <!-- New Converter Section -->
+    <section class="converter-section" id="converter">
+        <div class="container converter-container">
+            <div class="converter-header">
+                <h2>JPEG to JPG Converter</h2>
+                <p>Convert between JPEG and JPG formats instantly</p>
+            </div>
+
+            <!-- Upload Area -->
+            <div class="upload-area" id="upload-area">
+                <input type="file" id="file-input" accept="image/jpeg, image/jpg">
+                <label for="file-input" class="upload-label">
+                    <i class="fas fa-upload"></i> Choose File
+                </label>
+                <p>or drag and drop files here</p>
+            </div>
+
+            <!-- Preview Container -->
+            <div class="preview-container" id="preview-container">
+                <img id="preview-image" alt="Image Preview">
+                <div class="file-info" id="file-info"></div>
+            </div>
+
+            <!-- Conversion Options -->
+            <div class="conversion-options">
+                <button class="download-btn" id="convert-btn">
+                    <i class="fas fa-download"></i> Download JPG
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- JavaScript for Conversion -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const fileInput = document.getElementById('file-input');
+            const uploadArea = document.getElementById('upload-area');
+            const previewContainer = document.getElementById('preview-container');
+            const previewImage = document.getElementById('preview-image');
+            const convertBtn = document.getElementById('convert-btn');
+            const fileInfo = document.getElementById('file-info');
+
+            // Handle file selection
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    showPreview(file);
+                }
+            });
+
+            // Drag and drop functionality
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    fileInput.files = e.dataTransfer.files;
+                    showPreview(file);
+                }
+            });
+
+            // Show preview and enable download button
+            function showPreview(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImage.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                    convertBtn.style.display = 'inline-block';
+                    fileInfo.textContent = `File: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // Handle conversion and download
+            convertBtn.addEventListener('click', () => {
+                const file = fileInput.files[0];
+                if (file) {
+                    const newFileName = file.name.replace(/\.[^/.]+$/, "") + '.jpg';
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(file);
+                    link.download = newFileName;
+                    link.click();
+                } else {
+                    alert('Please select a file first!');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
