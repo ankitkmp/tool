@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free Online Image Background Remover - Remove backgrounds from images automatically using AI">
+    <title>AI Background Remover | Free Image Editing Tool</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_AD_CLIENT_ID" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.18.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.0.5/dist/body-pix.min.js"></script>
+    <style>
+        :root {
+            --primary: #10B981;
+            --secondary: #059669;
+            --background: #F3F4F6;
+            --text: #1F2937;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .tool-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .upload-section {
+            border: 2px dashed #CBD5E1;
+            padding: 3rem;
+            text-align: center;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .upload-section:hover {
+            border-color: var(--primary);
+            background: #F8FAFC;
+        }
+
+        .preview-container {
+            position: relative;
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            display: none;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+        }
+
+        .loading {
+            display: none;
+            color: var(--primary);
+            margin: 1rem 0;
+        }
+
+        .ad-section {
+            margin: 2rem 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AI Background Remover</h1>
+            <p>Remove image backgrounds automatically using AI</p>
+        </div>
+
+        <div class="ad-section">
+            <ins class="adsbygoogle"
+                style="display:block"
+                data-ad-client="ca-pub-YOUR_AD_CLIENT_ID"
+                data-ad-slot="YOUR_AD_SLOT_ID"
+                data-ad-format="auto"
+                data-full-width-responsive="true"></ins>
+        </div>
+
+        <div class="tool-section">
+            <div class="upload-section" id="dropZone">
+                <input type="file" id="imageInput" accept="image/*" hidden>
+                <label for="imageInput" class="btn">📸 Upload Image</label>
+                <p>or drag and drop image</p>
+            </div>
+
+            <div class="preview-container">
+                <img id="previewImage" class="image-preview">
+                <canvas id="previewCanvas" hidden></canvas>
+            </div>
+
+            <div class="loading" id="loading">Processing... (This may take 10-20 seconds)</div>
+            <button class="btn" id="removeBgBtn" style="display: none;">Remove Background</button>
+            <a id="downloadLink" class="btn" style="display: none; margin-top: 1rem;">Download Image</a>
+        </div>
+
+        <div class="ad-section">
+            <ins class="adsbygoogle"
+                style="display:block"
+                data-ad-client="ca-pub-YOUR_AD_CLIENT_ID"
+                data-ad-slot="YOUR_AD_SLOT_ID"
+                data-ad-format="auto"
+                data-full-width-responsive="true"></ins>
+        </div>
+    </div>
+
+    <script>
+        // Initialize AdSense
+        (adsbygoogle = window.adsbygoogle || []).push({});
+
+        const imageInput = document.getElementById('imageInput');
+        const removeBgBtn = document.getElementById('removeBgBtn');
+        const previewImage = document.getElementById('previewImage');
+        const previewCanvas = document.getElementById('previewCanvas');
+        const loading = document.getElementById('loading');
+        const downloadLink = document.getElementById('downloadLink');
+        let net;
+
+        // Load BodyPix model
+        async function loadModel() {
+            net = await bodyPix.load({
+                architecture: 'MobileNetV1',
+                outputStride: 16,
+                multiplier: 0.75,
+                quantBytes: 2
+            });
+        }
+
+        // Handle image upload
+        imageInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                previewImage.src = url;
+                previewImage.style.display = 'block';
+                removeBgBtn.style.display = 'block';
+            }
+        });
+
+        // Remove background
+        removeBgBtn.addEventListener('click', async () => {
+            if (!previewImage.src) return;
+
+            try {
+                loading.style.display = 'block';
+                removeBgBtn.disabled = true;
+
+                // Set canvas dimensions
+                previewCanvas.width = previewImage.naturalWidth;
+                previewCanvas.height = previewImage.naturalHeight;
+                
+                // Perform segmentation
+                const segmentation = await net.segmentPerson(previewImage, {
+                    flipHorizontal: false,
+                    internalResolution: 'medium',
+                    segmentationThreshold: 0.7
+                });
+
+                // Create mask
+                const mask = bodyPix.toMask(segmentation);
+                const ctx = previewCanvas.getContext('2d');
+
+                // Draw original image
+                ctx.drawImage(previewImage, 0, 0);
+
+                // Apply mask
+                const imageData = ctx.getImageData(0, 0, previewCanvas.width, previewCanvas.height);
+                for (let i = 0; i < mask.data.length; i++) {
+                    imageData.data[i * 4 + 3] = mask.data[i];
+                }
+                ctx.putImageData(imageData, 0, 0);
+
+                // Show result
+                const resultUrl = previewCanvas.toDataURL();
+                downloadLink.href = resultUrl;
+                downloadLink.download = 'background-removed.png';
+                downloadLink.style.display = 'block';
+            } catch (error) {
+                alert('Error processing image: ' + error.message);
+            } finally {
+                loading.style.display = 'none';
+                removeBgBtn.disabled = false;
+            }
+        });
+
+        // Initialize model
+        loadModel();
+
+        // Drag and drop handling
+        const dropZone = document.getElementById('dropZone');
+        dropZone.addEventListener('dragover', (e) => e.preventDefault());
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            imageInput.files = e.dataTransfer.files;
+            imageInput.dispatchEvent(new Event('change'));
+        });
+    </script>
+</body>
+</html>
