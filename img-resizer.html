@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Image Editor | Resize & Crop Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-light: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-light);
+        }
+
+        .tool-container {
+            background: var(--surface);
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+        }
+
+        .editor-section {
+            position: relative;
+            min-height: 500px;
+        }
+
+        .upload-card {
+            border: 2px dashed var(--border);
+            border-radius: 0.75rem;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--surface);
+        }
+
+        .upload-card:hover {
+            border-color: var(--primary);
+            background: #f8fafc;
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .controls-card {
+            background: var(--surface);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .control-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .control-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            background: var(--background);
+            transition: border-color 0.2s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .range-slider {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            background: var(--border);
+            border-radius: 3px;
+            margin: 1rem 0;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .cropper-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 1rem auto;
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+
+        .preview-container {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: center;
+        }
+
+        .ad-section {
+            background: var(--surface);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .tool-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .ad-section {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Pro Image Editor</h1>
+            <p>Resize, crop, and optimize images with professional precision</p>
+        </header>
+
+        <div class="tool-container">
+            <div class="editor-section">
+                <div class="upload-card" id="dropZone">
+                    <div class="upload-icon">📷</div>
+                    <input type="file" id="imageInput" accept="image/*" hidden>
+                    <h3>Click to upload image</h3>
+                    <p class="text-light">or drag and drop file here</p>
+                    <p class="text-light">Supports: JPEG, PNG, WEBP</p>
+                </div>
+
+                <div class="controls-card hidden" id="controlsCard">
+                    <div class="control-group">
+                        <label class="control-label">Dimensions (px)</label>
+                        <div class="grid grid-2col">
+                            <input type="number" id="width" class="input-field" placeholder="Width">
+                            <input type="number" id="height" class="input-field" placeholder="Height">
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">Quality: <span id="qualityValue">80</span>%</label>
+                        <input type="range" id="quality" class="range-slider" min="10" max="100" value="80">
+                    </div>
+
+                    <div class="cropper-container">
+                        <img id="imagePreview" class="hidden">
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn" id="resetBtn">
+                            <span>↻</span> Reset
+                        </button>
+                        <button class="btn" id="processBtn">
+                            <span>✂️</span> Process Image
+                        </button>
+                    </div>
+                </div>
+
+                <div class="preview-container hidden" id="previewSection">
+                    <h3>Processed Image Preview</h3>
+                    <img id="outputPreview" class="output-image">
+                    <button class="btn" id="downloadBtn" style="margin-top: 1.5rem;">
+                        <span>⬇️</span> Download Image
+                    </button>
+                </div>
+            </div>
+
+            <div class="ad-section">
+                <!-- Google AdSense -->
+                <ins class="adsbygoogle"
+                    style="display:block"
+                    data-ad-client="ca-pub-YOUR_AD_CLIENT_ID"
+                    data-ad-slot="YOUR_AD_SLOT_ID"
+                    data-ad-format="auto"
+                    data-full-width-responsive="true"></ins>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script>
+        // Initialize AdSense
+        (adsbygoogle = window.adsbygoogle || []).push({});
+
+        // Tool Functionality
+        const imageInput = document.getElementById('imageInput');
+        const dropZone = document.getElementById('dropZone');
+        const controlsCard = document.getElementById('controlsCard');
+        const previewSection = document.getElementById('previewSection');
+        let cropper;
+
+        // Initialize Cropper
+        function initCropper(imageSrc) {
+            if (cropper) cropper.destroy();
+            
+            const image = document.getElementById('imagePreview');
+            image.src = imageSrc;
+            image.classList.remove('hidden');
+            
+            cropper = new Cropper(image, {
+                aspectRatio: NaN,
+                viewMode: 2,
+                autoCropArea: 1,
+                responsive: true,
+                guides: true,
+                center: true
+            });
+
+            controlsCard.classList.remove('hidden');
+        }
+
+        // Handle File Upload
+        dropZone.addEventListener('click', () => imageInput.click());
+        imageInput.addEventListener('change', handleFileSelect);
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => initCropper(e.target.result);
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Process Image
+        document.getElementById('processBtn').addEventListener('click', processImage);
+
+        function processImage() {
+            const quality = document.getElementById('quality').value / 100;
+            const canvas = cropper.getCroppedCanvas({
+                width: parseInt(document.getElementById('width').value) || undefined,
+                height: parseInt(document.getElementById('height').value) || undefined
+            });
+
+            canvas.toBlob(blob => {
+                const url = URL.createObjectURL(blob);
+                previewSection.classList.remove('hidden');
+                document.getElementById('outputPreview').src = url;
+                
+                document.getElementById('downloadBtn').onclick = () => {
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `processed-${Date.now()}.jpg`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                };
+            }, 'image/jpeg', quality);
+        }
+
+        // Reset Functionality
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            cropper.reset();
+            previewSection.classList.add('hidden');
+        });
+
+        // Drag & Drop Handling
+        dropZone.addEventListener('dragover', e => e.preventDefault());
+        dropZone.addEventListener('drop', e => {
+            e.preventDefault();
+            imageInput.files = e.dataTransfer.files;
+            handleFileSelect(e);
+        });
+    </script>
+</body>
+</html>
